@@ -20,10 +20,10 @@
           "url": "https://github.com/itoha-noctlab/avatar-parameters-auto-prefix/releases/download/v1.0.0/com.noctlab.avatar-parameters-auto-prefix-1.0.0.zip",
           "license": "MIT",
           "vpmDependencies": {
-            "com.vrchat.avatars": "3.5.x",
+            "com.vrchat.avatars": ">=3.5.0 <4.0.0",
             "nadena.dev.modular-avatar": ">=1.11.0 <2.0.0-a"
           },
-          "zipSHA256": "d0cb3c6a4d0095b6061e3867def5ab39b56182cfd93c2a629383b92a74e20bc3"
+          "zipSHA256": "1eb6c3b96462c10eabf4e1ed16c80abd67f60c7617c4c6eaf1df045e725595ee"
         }
       }
     }
