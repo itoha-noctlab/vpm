@@ -1,0 +1,97 @@
+name: Update Listing From Package Manifest
+
+on:
+  repository_dispatch:
+    types: [package_released]
+  workflow_dispatch:
+    inputs:
+      package_manifest_url:
+        description: "Raw URL to package.json"
+        required: true
+        type: string
+      zip_sha256:
+        description: "Optional SHA256 for package zip (leave blank to auto-download and calculate)"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Resolve inputs
+        id: input
+        shell: pwsh
+        run: |
+          $eventName = "${{ github.event_name }}"
+
+          if ($eventName -eq "repository_dispatch") {
+            $manifestUrl = "${{ github.event.client_payload.package_manifest_url }}"
+            $sha = "${{ github.event.client_payload.zip_sha256 }}"
+          } else {
+            $manifestUrl = "${{ inputs.package_manifest_url }}"
+            $sha = "${{ inputs.zip_sha256 }}"
+          }
+
+          if ([string]::IsNullOrWhiteSpace($manifestUrl)) {
+            throw "package_manifest_url is empty"
+          }
+
+          "package_manifest_url=$manifestUrl" >> $env:GITHUB_OUTPUT
+          "zip_sha256=$sha" >> $env:GITHUB_OUTPUT
+
+      - name: Download package manifest
+        shell: pwsh
+        run: |
+          Invoke-WebRequest -Uri "${{ steps.input.outputs.package_manifest_url }}" -OutFile "package.json"
+
+      - name: Resolve SHA256
+        id: sha
+        shell: pwsh
+        run: |
+          $manual = "${{ steps.input.outputs.zip_sha256 }}"
+          if (-not [string]::IsNullOrWhiteSpace($manual)) {
+            "value=$manual" >> $env:GITHUB_OUTPUT
+            exit 0
+          }
+
+          $pkg = Get-Content -Path "package.json" -Raw | ConvertFrom-Json
+          $zipUrl = [string]$pkg.url
+          if ([string]::IsNullOrWhiteSpace($zipUrl)) {
+            throw "package.json url is empty"
+          }
+
+          Invoke-WebRequest -Uri $zipUrl -OutFile "package.zip"
+          $sha = (Get-FileHash -Path "package.zip" -Algorithm SHA256).Hash.ToLowerInvariant()
+          "value=$sha" >> $env:GITHUB_OUTPUT
+
+      - name: Update vpm.json
+        shell: pwsh
+        run: |
+          ./scripts/Update-VpmJsonFromPackage.ps1 `
+            -PackageManifestPath "package.json" `
+            -ZipSha256 "${{ steps.sha.outputs.value }}" `
+            -OutputPath "vpm.json"
+
+      - name: Commit changes
+        shell: pwsh
+        run: |
+          $pkg = Get-Content -Path "package.json" -Raw | ConvertFrom-Json
+          $pkgName = [string]$pkg.name
+          $pkgVersion = [string]$pkg.version
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add vpm.json
+          if (git diff --cached --quiet) {
+            Write-Host "No changes in vpm.json"
+            exit 0
+          }
+          git commit -m "Update vpm.json for $pkgName@$pkgVersion"
+          git push

@@ -1,0 +1,25 @@
+name: Validate VPM Listing
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate vpm.json
+        shell: pwsh
+        run: |
+          $json = Get-Content -Path "vpm.json" -Raw | ConvertFrom-Json
+
+          if (-not $json.name) { throw "vpm.json: name is required" }
+          if (-not $json.id) { throw "vpm.json: id is required" }
+          if (-not $json.url) { throw "vpm.json: url is required" }
+          if (-not $json.packages) { throw "vpm.json: packages is required" }
+
+          Write-Host "vpm.json validated"
