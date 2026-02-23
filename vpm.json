@@ -6,25 +6,6 @@
   "packages": {
     "com.noctlab.avatar-parameters-auto-prefix": {
       "versions": {
-        "1.0.0": {
-          "name": "com.noctlab.avatar-parameters-auto-prefix",
-          "displayName": "Avatar Parameters Auto Prefix",
-          "version": "1.0.0",
-          "description": "Adds a configurable prefix to Avatar parameter names during build processing.",
-          "unity": "2022.3",
-          "author": {
-            "name": "NoctLab",
-            "email": "itoha@noctlab.com",
-            "url": "https://noctlab.com"
-          },
-          "url": "https://github.com/itoha-noctlab/avatar-parameters-auto-prefix/releases/download/v1.0.0/com.noctlab.avatar-parameters-auto-prefix-1.0.0.zip",
-          "license": "MIT",
-          "vpmDependencies": {
-            "com.vrchat.avatars": ">=3.5.0 <4.0.0",
-            "nadena.dev.modular-avatar": ">=1.11.0 <2.0.0-a"
-          },
-          "zipSHA256": "1eb6c3b96462c10eabf4e1ed16c80abd67f60c7617c4c6eaf1df045e725595ee"
-        },
         "1.0.2": {
           "name": "com.noctlab.avatar-parameters-auto-prefix",
           "displayName": "Avatar Parameters Auto Prefix",
