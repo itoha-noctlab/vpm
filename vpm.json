@@ -139,6 +139,27 @@
             "com.vrchat.avatars": ">=3.5.0 <4.0.0"
           },
           "zipSHA256": "1be751885fd761734ad2028328a026aa477078f8c46144deb9a9edcc10a936f9"
+        },
+        "1.0.2": {
+          "name": "com.noctlab.avatar-switcher",
+          "displayName": "Avatar Switcher",
+          "version": "1.0.2",
+          "description": "Provides an editor window to switch active VRChat avatars in the hierarchy.",
+          "unity": "2022.3",
+          "author": {
+            "name": "NoctLab",
+            "email": "itoha@noctlab.com",
+            "url": "https://noctlab.com"
+          },
+          "url": "https://github.com/itoha-noctlab/avatar-switcher/releases/download/v1.0.2/com.noctlab.avatar-switcher-1.0.2.zip",
+          "license": "MIT",
+          "legacyFolders": {
+            "Assets\\AKATSUKIYA\\AvatarSwitcher": ""
+          },
+          "vpmDependencies": {
+            "com.vrchat.avatars": ">=3.5.0 <4.0.0"
+          },
+          "zipSHA256": "2241bf905cba9a1d46983024752e0c53d0273825268ec8f1130f20b0ac0ea1a1"
         }
       }
     }
